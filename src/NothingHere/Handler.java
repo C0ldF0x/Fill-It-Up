@@ -130,7 +130,7 @@ public class Handler extends JFrame {
                 grid[i][k].setBackground(Color.white);
             }
         }
-        
+        remaining=nBox*nBox;
         int left = 4, i, k;
         do {
             i = (int) (Math.random() * nBox);
@@ -144,7 +144,7 @@ public class Handler extends JFrame {
     }
 
     public void addBoxs(){
-        int left = 3, i, k;
+        int left = 7, i, k;
         do {
             i = (int) (Math.random() * nBox);
             k = (int) (Math.random() * nBox);
