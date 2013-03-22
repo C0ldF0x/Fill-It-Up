@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package NothingHere;
 
 import java.awt.Color;
@@ -9,7 +5,9 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author Pedro
+ * @author C0ldF0x
+ * All rights reserved.
+ * 
  */
 public class Box extends JLabel{
     
