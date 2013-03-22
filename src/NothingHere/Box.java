@@ -11,7 +11,7 @@ import javax.swing.JLabel;
  */
 public class Box extends JLabel{
     
-    static Color colorList[] = {Color.red, Color.blue, Color.green, Color.pink, Color.orange, Color.black, Color.gray};
+    static Color colorList[] = {Color.red, Color.blue, Color.green, Color.pink, Color.orange, Color.cyan, Color.gray, Color.magenta};
     Color color;
     boolean selected;
     

@@ -3,15 +3,24 @@ package NothingHere;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 /**
  *
@@ -30,11 +39,18 @@ public class Handler extends JFrame {
     
     JMenuBar bar = new JMenuBar();
     
-    Handler() throws InterruptedException {
+    
+    
+    Handler(){
         Container c = getContentPane();
         c.setBackground(Color.LIGHT_GRAY);
         GridLayout gl = new GridLayout(nBox, nBox, 2, 2);
         c.setLayout(gl);
+        
+            
+
+        
+        
         this.setJMenuBar(bar);
         bar.add(scoreInfo);
         
@@ -48,7 +64,6 @@ public class Handler extends JFrame {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         Box aux = ((Box)e.getSource());
-                        
                         if(lastSelected==null && aux.getBackground()!=Color.white){
                             lastSelected=aux;
                             lastSelected.setBackground(lastSelected.color.darker().darker());
@@ -58,15 +73,42 @@ public class Handler extends JFrame {
                             lastSelected.color=Color.white;
                             lastSelected.setBackground(lastSelected.color);
                             lastSelected=null;
+                            try {
+                                playPop();
+                            } catch (FileNotFoundException ex) {
+                                Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            
                         }else if(lastSelected!=null && aux.getBackground()!=Color.white){
                             lastSelected.setBackground(lastSelected.color);
                             lastSelected=aux;
                             lastSelected.setBackground(aux.color.darker().darker());
                             
                         }   
-                        
-                        if(!checkRowH() && !checkRowV() && !checkRowDiagonalR() && !checkRowDiagonalL() && lastSelected==null && aux.color!=Color.white)
-                        addBoxs();
+                        try {
+                            if(!checkRowH() && !checkRowV() && !checkRowDiagonalR() && !checkRowDiagonalL() && lastSelected==null && aux.color!=Color.white)
+                                addBoxs();
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        if(remaining==nBox*nBox)
+                            try {
+                            addBoxs();
+                        } catch (FileNotFoundException ex) {
+                            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(Handler.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
 
                     @Override
@@ -143,7 +185,7 @@ public class Handler extends JFrame {
         } while (left != 0);
     }
 
-    public void addBoxs(){
+    public void addBoxs() throws FileNotFoundException, InterruptedException, IOException{
         int left = 7, i, k;
         do {
             i = (int) (Math.random() * nBox);
@@ -170,9 +212,29 @@ public class Handler extends JFrame {
        
     }
 
+    public void playPop() throws FileNotFoundException, IOException, InterruptedException{
+        InputStream in = new FileInputStream("C:\\sound.wav");                
+        AudioStream as = new AudioStream(in);
+        AudioPlayer.player.start(as);   
+                            
+        Thread.sleep(50);
+                            
+        AudioPlayer.player.stop(as);                 
     
     
-    public boolean checkRowV() {
+    }
+    
+    public void playWoosh() throws FileNotFoundException, IOException, InterruptedException{
+        InputStream in = new FileInputStream("C:\\sound2.wav");                
+        AudioStream as = new AudioStream(in);
+        AudioPlayer.player.start(as);   
+                            
+        Thread.sleep(100);
+                            
+        AudioPlayer.player.stop(as);   
+    }
+    
+    public boolean checkRowV() throws FileNotFoundException, IOException, IOException, InterruptedException {
         for (int i = 1; i < nBox-1; i++) {
             for (int k = 0; k < nBox; k++) {
                 if(grid[i][k].getBackground()==grid[i-1][k].getBackground() && grid[i][k].getBackground()==grid[i+1][k].getBackground() && grid[i][k].getBackground()!=Color.white){
@@ -185,6 +247,7 @@ public class Handler extends JFrame {
                     remaining+=3;
                     score+=3;
                     scoreInfo.setText(("Score: "+score));
+                    playWoosh();
                     return true;
                 }
             }
@@ -192,7 +255,7 @@ public class Handler extends JFrame {
         return false;
     }
     
-    public boolean checkRowH(){
+    public boolean checkRowH() throws FileNotFoundException, IOException, IOException, InterruptedException{
         for (int i = 0; i < nBox; i++) {
             for (int k = 1; k < nBox-1; k++) {
                 if(grid[i][k].getBackground()==grid[i][k-1].getBackground() && grid[i][k].getBackground()==grid[i][k+1].getBackground() && grid[i][k].getBackground()!=Color.white){
@@ -205,6 +268,7 @@ public class Handler extends JFrame {
                     remaining+=3;
                     score+=3;
                     scoreInfo.setText(("Score: "+score));
+                    playWoosh();
                     return true;
                 }
             }
@@ -212,7 +276,7 @@ public class Handler extends JFrame {
         return false;
     }
     
-    public boolean checkRowDiagonalL(){
+    public boolean checkRowDiagonalL() throws FileNotFoundException, IOException, IOException, InterruptedException{
         for (int i = 1; i < nBox-1; i++) {
             for (int k = 1; k < nBox-1; k++) {
                 if(grid[i][k].getBackground()==grid[i-1][k-1].getBackground() && grid[i][k].getBackground()==grid[i+1][k+1].getBackground() && grid[i][k].getBackground()!=Color.white){
@@ -225,6 +289,7 @@ public class Handler extends JFrame {
                     remaining+=3;
                     score+=3;
                     scoreInfo.setText(("Score: "+score));
+                    playWoosh();
                     return true;
             }
         }
@@ -233,7 +298,7 @@ public class Handler extends JFrame {
         return false;
     }
     
-    public boolean checkRowDiagonalR(){
+    public boolean checkRowDiagonalR() throws FileNotFoundException, IOException, InterruptedException{
         for (int i = 1; i < nBox-1; i++) {
             for (int k = 1; k < nBox-1; k++) {
                 if(grid[i][k].getBackground()==grid[i+1][k-1].getBackground() && grid[i][k].getBackground()==grid[i-1][k+1].getBackground() && grid[i][k].getBackground()!=Color.white){
@@ -246,6 +311,7 @@ public class Handler extends JFrame {
                     remaining+=3;
                     score+=3;
                     scoreInfo.setText(("Score: "+score));
+                    playWoosh();
                     return true;
             }
         }
@@ -254,7 +320,10 @@ public class Handler extends JFrame {
         return false;
     } 
     
-    public static void main(String args[]) throws InterruptedException {
+    public static void main(String args[]) throws InterruptedException, IOException {
+        
+        
+
         Handler handler = new Handler();
         
         
