@@ -30,18 +30,18 @@ import sun.audio.AudioStream;
 public class Handler extends JFrame {
 
     int nBox=6;
-    
+    int level = 1;
     Box[][] grid = new Box[nBox][nBox];
     int remaining = nBox * nBox;
     Box lastSelected=null;
     int score = 0;
-    JLabel scoreInfo = new JLabel(("Score: "+score));
     
+    JLabel scoreInfo = new JLabel(("Score: "+score));
+    JLabel levelInfo = new JLabel(("Level: "+level));
     JMenuBar bar = new JMenuBar();
     
     
-    
-    Handler(){
+    Handler() throws FileNotFoundException, InterruptedException, IOException{
         Container c = getContentPane();
         c.setBackground(Color.LIGHT_GRAY);
         GridLayout gl = new GridLayout(nBox, nBox, 2, 2);
@@ -53,8 +53,10 @@ public class Handler extends JFrame {
         
         this.setJMenuBar(bar);
         bar.add(scoreInfo);
+        bar.add(levelInfo);
         
         scoreInfo.setText(("Score: "+score));
+        levelInfo.setText(("Level: "+level));
         for (int i = 0; i < nBox; i++) {
             for (int k = 0; k < nBox; k++) {
                 grid[i][k] = new Box();
@@ -164,7 +166,7 @@ public class Handler extends JFrame {
 
     }
 
-    public void init() {
+    public void init() throws FileNotFoundException, InterruptedException, IOException {
         for (int i = 0; i < nBox; i++) {
             for (int k = 0; k < nBox; k++) {
                 grid[i][k].color=Color.white;
@@ -172,8 +174,11 @@ public class Handler extends JFrame {
                 grid[i][k].setBackground(Color.white);
             }
         }
+         
         remaining=nBox*nBox;
-        int left = 4, i, k;
+        addBoxs();
+        
+       /* int left = 4, i, k;
         do {
             i = (int) (Math.random() * nBox);
             k = (int) (Math.random() * nBox);
@@ -182,11 +187,11 @@ public class Handler extends JFrame {
                 left--;
                 remaining--;
             }
-        } while (left != 0);
+        } while (left != 0);*/
     }
 
     public void addBoxs() throws FileNotFoundException, InterruptedException, IOException{
-        int left = 7, i, k;
+        int left = level+2, i, k;
         do {
             i = (int) (Math.random() * nBox);
             k = (int) (Math.random() * nBox);
@@ -194,6 +199,9 @@ public class Handler extends JFrame {
                 grid[i][k].colorize();
                 left--;
                 remaining--;
+                if(i==0)
+                    grid[i][k].openRoute[Box.N]=false;
+                
             }
         } while (left != 0 && remaining > 0);
         checkRowV();    
@@ -213,7 +221,7 @@ public class Handler extends JFrame {
     }
 
     public void playPop() throws FileNotFoundException, IOException, InterruptedException{
-        InputStream in = new FileInputStream("C:\\sound.wav");                
+        InputStream in = new FileInputStream("sound\\sound.wav");                
         AudioStream as = new AudioStream(in);
         AudioPlayer.player.start(as);   
                             
@@ -225,13 +233,18 @@ public class Handler extends JFrame {
     }
     
     public void playWoosh() throws FileNotFoundException, IOException, InterruptedException{
-        InputStream in = new FileInputStream("C:\\sound2.wav");                
+        InputStream in = new FileInputStream("sound\\sound2.wav");                
         AudioStream as = new AudioStream(in);
         AudioPlayer.player.start(as);   
                             
         Thread.sleep(100);
                             
-        AudioPlayer.player.stop(as);   
+        AudioPlayer.player.stop(as);  
+        remaining+=3;
+        score+=3;
+        scoreInfo.setText(("Score: "+score));
+        level=score/1000;
+        
     }
     
     public boolean checkRowV() throws FileNotFoundException, IOException, IOException, InterruptedException {
@@ -244,9 +257,6 @@ public class Handler extends JFrame {
                     grid[i-1][k].color=Color.white;
                     grid[i+1][k].setBackground(Color.white);
                     grid[i+1][k].color=Color.white;
-                    remaining+=3;
-                    score+=3;
-                    scoreInfo.setText(("Score: "+score));
                     playWoosh();
                     return true;
                 }
@@ -265,9 +275,6 @@ public class Handler extends JFrame {
                     grid[i][k-1].color=Color.white;
                     grid[i][k+1].setBackground(Color.white);
                     grid[i][k+1].color=Color.white;
-                    remaining+=3;
-                    score+=3;
-                    scoreInfo.setText(("Score: "+score));
                     playWoosh();
                     return true;
                 }
@@ -286,9 +293,6 @@ public class Handler extends JFrame {
                     grid[i-1][k-1].color=Color.white;
                     grid[i+1][k+1].setBackground(Color.white);
                     grid[i+1][k+1].color=Color.white;
-                    remaining+=3;
-                    score+=3;
-                    scoreInfo.setText(("Score: "+score));
                     playWoosh();
                     return true;
             }
@@ -308,9 +312,6 @@ public class Handler extends JFrame {
                     grid[i+1][k-1].color=Color.white;
                     grid[i-1][k+1].setBackground(Color.white);
                     grid[i-1][k+1].color=Color.white;
-                    remaining+=3;
-                    score+=3;
-                    scoreInfo.setText(("Score: "+score));
                     playWoosh();
                     return true;
             }
