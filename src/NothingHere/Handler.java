@@ -37,6 +37,7 @@ public class Handler extends JFrame {
     int score = 0;
     
     JLabel scoreInfo = new JLabel(("Score: "+score));
+    JLabel blankSpace = new JLabel(("                "));
     JLabel levelInfo = new JLabel(("Level: "+level));
     JMenuBar bar = new JMenuBar();
     
@@ -53,6 +54,7 @@ public class Handler extends JFrame {
         
         this.setJMenuBar(bar);
         bar.add(scoreInfo);
+        bar.add(blankSpace);
         bar.add(levelInfo);
         
         scoreInfo.setText(("Score: "+score));
@@ -192,6 +194,8 @@ public class Handler extends JFrame {
 
     public void addBoxs() throws FileNotFoundException, InterruptedException, IOException{
         int left = level+2, i, k;
+        if (left>=9)
+            left=9;
         do {
             i = (int) (Math.random() * nBox);
             k = (int) (Math.random() * nBox);
@@ -221,30 +225,29 @@ public class Handler extends JFrame {
     }
 
     public void playPop() throws FileNotFoundException, IOException, InterruptedException{
-        InputStream in = new FileInputStream("sound\\sound.wav");                
+        /*InputStream in = new FileInputStream("sound\\sound.wav");                
         AudioStream as = new AudioStream(in);
         AudioPlayer.player.start(as);   
                             
         Thread.sleep(50);
                             
         AudioPlayer.player.stop(as);                 
-    
+    */
     
     }
     
     public void playWoosh() throws FileNotFoundException, IOException, InterruptedException{
-        InputStream in = new FileInputStream("sound\\sound2.wav");                
-        AudioStream as = new AudioStream(in);
-        AudioPlayer.player.start(as);   
+        //InputStream in = new FileInputStream("sound\\sound2.wav");                
+        //AudioStream as = new AudioStream(in);
+        //AudioPlayer.player.start(as);   
                             
-        Thread.sleep(100);
+        //Thread.sleep(100);
                             
-        AudioPlayer.player.stop(as);  
+        //AudioPlayer.player.stop(as);  
         remaining+=3;
-        score+=3;
+        score+=30;
         scoreInfo.setText(("Score: "+score));
-        level=score/1000;
-        
+        level=score/100;
     }
     
     public boolean checkRowV() throws FileNotFoundException, IOException, IOException, InterruptedException {
